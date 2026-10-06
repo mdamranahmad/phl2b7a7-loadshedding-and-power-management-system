@@ -12,13 +12,59 @@ import {
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
+import { loginZschema } from "@/validation";
+import { useRouter } from "next/navigation";
+import { useUserLogin } from "@/hooks";
+import { toast } from "../ui/toast";
+import { IApiError } from "@/types";
+import { Spinner } from "../ui/spinner";
 
 export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
+    const router = useRouter();
+
+    const { mutate: login, isPending: isLoginPending } = useUserLogin();
     const form = useForm({
         defaultValues: {
-            email: "",
-            password: "",
+            // email: "",
+            // password: "",
+            // email: "zonemanager01@email.com",
+            // password: "Zone@manager12345",
+            // email: "substationmanager01@email.com",
+            // password: "Substation@manager12345",
+            // email: "substationmanager01@email.com",
+            // password: "Substation@manager12345",
+            email: "testtechnician01@email.com",
+            password: "Test@technician12345",
+        },
+        validators: { onSubmit: loginZschema },
+        onSubmit: ({ value }) => {
+            const loginData = {
+                email: value.email,
+                password: value.password,
+            };
+
+            login(loginData, {
+                onSuccess: (res) => {
+                    toast.add({
+                        title: "Login Success",
+                        description: "Welcome Back",
+                        type: "Success",
+                    });
+
+                    router.push("/");
+                },
+
+                onError: (err: IApiError) => {
+                    toast.add({
+                        title: "Login Failed",
+                        description:
+                            err.data?.message ||
+                            "Somethind went Wrong! Please Try Again",
+                        type: "error",
+                    });
+                },
+            });
         },
     });
     // const form = useForm({
@@ -130,14 +176,19 @@ export default function LoginForm() {
                             );
                         }}
                     </form.Field>
-                    <Button type="submit" size="lg">
-                        Submit
+                    <Button disabled={isLoginPending} type="submit" size="lg">
+                        {isLoginPending ? (
+                            <Spinner>Submitting..</Spinner>
+                        ) : (
+                            "Submit"
+                        )}
                     </Button>
                 </FieldGroup>
             </form>
             <FieldSeparator>OR</FieldSeparator>
             {/* Google Login Component Will Go Here */}
             {/* Demo Login Component Will Go Here */}
+            {/* Prompt To Register Will Go Here */}
         </div>
     );
 }
