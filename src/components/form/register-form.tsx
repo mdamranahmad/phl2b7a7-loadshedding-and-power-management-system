@@ -3,8 +3,6 @@
 import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
-import DemoLogin from "@/components/modules/auth/demo-login";
 import { Button } from "@/components/ui/button";
 import {
     Field,
@@ -278,7 +276,7 @@ export function RegisterForm() {
                 </Link>
             </div>
 
-            <div className="relative">
+            {/* <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
                 </div>
@@ -289,7 +287,7 @@ export function RegisterForm() {
                 </div>
             </div>
 
-            <DemoLogin />
+            <DemoLogin /> */}
         </form>
     );
 }
