@@ -1,11 +1,11 @@
 export interface IApiError extends Error {
+  data?: {
+    message?: string;
+    success?: boolean;
+  };
+  response?: {
     data?: {
-        message?: string;
-        success?: boolean;
+      message?: string;
     };
-    response?: {
-        data?: {
-            message?: string;
-        };
-    };
+  };
 }

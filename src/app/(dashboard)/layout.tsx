@@ -1,9 +1,9 @@
-import React from 'react'
+import type { ReactNode } from "react";
+import AuthGuard from "@/components/auth/auth-guard";
 
-const DashboardLayout = () => {
-  return (
-    <div>DashboardLayout</div>
-  )
-}
+/** Every route in this group requires a logged-in session. */
+const DashboardLayout = ({ children }: { children: ReactNode }) => {
+  return <AuthGuard>{children}</AuthGuard>;
+};
 
-export default DashboardLayout
+export default DashboardLayout;

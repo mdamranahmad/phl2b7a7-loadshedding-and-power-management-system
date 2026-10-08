@@ -1,91 +1,117 @@
+"use client";
+import { Menu } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import Logo from "@/assets/svg/Logo";
 import { Button } from "@/components/ui/button";
-import { IUserRole } from "@/types";
-import Link from "next/link";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useLogoutHandler, useUserGetMe } from "@/hooks";
+import type { IUserRole } from "@/types";
+
+const routes = [
+  { name: "Home", url: "/" },
+  { name: "Services", url: "/services" },
+  { name: "About Us", url: "/about" },
+  { name: "FAQ", url: "/faq" },
+  { name: "Contact", url: "/contact" },
+];
+
+const dashboardRoute: Record<IUserRole, string> = {
+  ZONE_MANAGER: "/zone",
+  SUBSTATION_MANAGER: "/substation",
+  TECHNICIAN: "/technician",
+  CUSTOMER: "/customer",
+};
 
 const Header = () => {
-    const routes = [
-        { name: "Home", url: "/" },
-        // { name: "Doctors", url: "/doctors" },
-        { name: "About Us", url: "/about-us" },
-    ];
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { data, isLoading } = useUserGetMe();
+  const { handleLogout, isPending } = useLogoutHandler();
+  const role = data?.data?.role ?? null;
 
-    const dashboardRoute: Record<IUserRole, string> = {
-        ZONE_MANAGER: "/zone",
-        SUBSTATION_MANAGER: "/substation",
-        TECHNICIAN: "/technician",
-        CUSTOMER: "/customer",
-    };
+  return (
+    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4">
+        <Link href="/" aria-label="Home">
+          <Logo width={170} height={50} />
+        </Link>
 
-    // While mutation, we were mutating data, and destructured mutation from useMutation, in case of Query, data and isLoading will be enough to use
-    // Header will be a client component as fetching data is a dynamic process (static shell, dynamic item/island)
-    // const { data, isLoading } = useGetMe(); // Hook call to check if user exists
-    // const { mutate: logout } = useLogout(); // Mutate for post method to mutate the data
-    // const queryClient = useQueryClient(); // To invalidate tags to refresh cache
-    // console.log("data: ", data);
+        <nav className="hidden items-center gap-6 md:flex">
+          {routes.map((route) => (
+            <Link
+              key={route.url}
+              href={route.url}
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {route.name}
+            </Link>
+          ))}
+        </nav>
 
-    // const role: UserRole = !!data?.data && data?.data.role;
+        <div className="flex items-center gap-2">
+          {!isLoading && !data && (
+            <>
+              <Button
+                variant="ghost"
+                render={<Link href="/register">Register</Link>}
+              />
+              <Button
+                variant="outline"
+                render={<Link href="/login">Login</Link>}
+              />
+            </>
+          )}
+          {!isLoading && data && role && (
+            <>
+              <Button
+                variant="outline"
+                render={<Link href={dashboardRoute[role]}>Dashboard</Link>}
+              />
+              <Button
+                variant="destructive"
+                onClick={handleLogout}
+                disabled={isPending}
+              >
+                Logout
+              </Button>
+            </>
+          )}
 
-    // const handleLogout = () => {
-    //     logout(undefined, {
-    //         onSuccess: () => {
-    //             toast.add({
-    //                 title: "GoodBye",
-    //                 description: "Logged Out Successfuly",
-    //                 type: "success",
-    //             });
-    //             // queryClient.invalidateQueries({ queryKey: ["user"] }); // Stales the user cache, a fresh data will be fetch for next refresh
-    //             queryClient.removeQueries({ queryKey: ["user"] }); // remove stale cache
-    //         },
-    //         onError: () => {
-    //             toast.add({
-    //                 title: "Logout Failed!",
-    //                 description: "Something Went Wrong",
-    //                 type: "error",
-    //             });
-    //         },
-    //     });
-    // };
-    return (
-        <header className="w-full h-16 border border-t">
-            <div className="flex justify-between items-center h-full max-w-7xl mx-auto">
-                {/* <div>PH HealthCare</div> */}
-                <div className="flex items-center gap-2">
-                    <Link href="./">
-                        <Logo />
-                    </Link>
-                </div>
-                <nav className="flex gap-5">
-                    {routes.map((route) => (
-                        <Link href={route.url} key={route.url}>
-                            {route.name}
-                        </Link>
-                    ))}
-                    {/* {role && <Link href={dashboardRoute[role]}>Dashboard</Link>} */}
-                </nav>
-                <div>
-                    {/**Login Button will render only for logged out user */}
-                    {/* {!isLoading && !data && ( */}
-                    <Button
-                        variant="outline"
-                        render={<Link href="/login">Login</Link>}
-                        nativeButton={false}
-                    >
-                        Login
-                    </Button>
-                    {/* )}
-                    {!isLoading && data && ( */}
-                    {/* <Button
-                        // onClick={handleLogout}
-                        variant="destructive"
-                    >
-                        Logout
-                    </Button> */}
-                    {/* )} */}
-                </div>
-            </div>
-        </header>
-    );
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <Button
+              variant="outline"
+              size="icon"
+              className="md:hidden"
+              aria-label="Open navigation menu"
+              render={<SheetTrigger />}
+            >
+              <Menu className="size-4" />
+            </Button>
+            <SheetContent side="right" className="w-64">
+              <SheetTitle className="sr-only">Navigation</SheetTitle>
+              <nav className="mt-6 flex flex-col gap-4">
+                {routes.map((route) => (
+                  <Link
+                    key={route.url}
+                    href={route.url}
+                    onClick={() => setMobileOpen(false)}
+                    className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {route.name}
+                  </Link>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+    </header>
+  );
 };
 
 export default Header;
