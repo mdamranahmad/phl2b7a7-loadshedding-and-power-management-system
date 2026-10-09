@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
     Field,
     FieldDescription,
+    FieldError,
     FieldGroup,
     FieldLabel,
 } from "@/components/ui/field";
@@ -17,6 +18,7 @@ import { getApiErrorMessage } from "@/lib/error";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
 import { registerZschema } from "@/validation";
+import { Spinner } from "../ui/spinner";
 
 export function RegisterForm() {
     const [showPassword, setShowPassword] = useState(false);
@@ -38,14 +40,25 @@ export function RegisterForm() {
         },
         onSubmit: async ({ value }) => {
             try {
-                await registerMutation.mutateAsync({
-                    name: value.name,
-                    email: value.email,
-                    password: value.password,
-                    customerProfile: { meterNumber: value.meterNumber },
-                });
-                router.push(
-                    `/register/verify?email=${encodeURIComponent(value.email)}`,
+                await registerMutation.mutateAsync(
+                    {
+                        name: value.name,
+                        email: value.email,
+                        password: value.password,
+                        customerProfile: { meterNumber: value.meterNumber },
+                    },
+                    {
+                        onSuccess: (res) => {
+                            toast.add({
+                                title: "Registration Successful",
+                                description: res.message,
+                                type: "success",
+                            });
+                            router.push(
+                                `/register/verify?email=${encodeURIComponent(value.email)}`,
+                            );
+                        },
+                    },
                 );
             } catch (error) {
                 toast.add({
@@ -67,57 +80,82 @@ export function RegisterForm() {
         >
             <FieldGroup>
                 <form.Field name="name">
-                    {(field) => (
-                        <Field>
-                            <FieldLabel htmlFor={field.name}>
-                                Full name
-                            </FieldLabel>
-                            <Input
-                                id={field.name}
-                                name={field.name}
-                                value={field.state.value}
-                                onBlur={field.handleBlur}
-                                onChange={(event) =>
-                                    field.handleChange(event.target.value)
-                                }
-                                placeholder="Jane Doe"
-                                autoComplete="name"
-                            />
-                            {field.state.meta.errors.length > 0 && (
-                                <FieldDescription className="text-destructive">
-                                    {field.state.meta.errors[0]?.message}
-                                </FieldDescription>
-                            )}
-                        </Field>
-                    )}
-                </form.Field>
-
-                <div className="grid gap-6 sm:grid-cols-2">
-                    <form.Field name="email">
-                        {(field) => (
+                    {(field) => {
+                        const isInvalid =
+                            field.state.meta.isTouched &&
+                            !field.state.meta.isValid;
+                        return (
                             <Field>
                                 <FieldLabel htmlFor={field.name}>
-                                    Email
+                                    Full name
                                 </FieldLabel>
                                 <Input
                                     id={field.name}
                                     name={field.name}
-                                    type="email"
                                     value={field.state.value}
                                     onBlur={field.handleBlur}
                                     onChange={(event) =>
                                         field.handleChange(event.target.value)
                                     }
-                                    placeholder="you@example.com"
-                                    autoComplete="email"
+                                    placeholder="Jane Doe"
+                                    autoComplete="name"
                                 />
-                                {field.state.meta.errors.length > 0 && (
+                                {isInvalid && (
+                                    <FieldError
+                                        errors={field.state.meta.errors}
+                                    />
+                                )}
+                                {/* {field.state.meta.errors.length > 0 && (
                                     <FieldDescription className="text-destructive">
                                         {field.state.meta.errors[0]?.message}
                                     </FieldDescription>
-                                )}
+                                )} */}
                             </Field>
-                        )}
+                        );
+                    }}
+                </form.Field>
+
+                <div className="grid gap-6 sm:grid-cols-2">
+                    <form.Field name="email">
+                        {(field) => {
+                            const isInvalid =
+                                field.state.meta.isTouched &&
+                                !field.state.meta.isValid;
+                            return (
+                                <Field>
+                                    <FieldLabel htmlFor={field.name}>
+                                        Email
+                                    </FieldLabel>
+                                    <Input
+                                        id={field.name}
+                                        name={field.name}
+                                        type="email"
+                                        value={field.state.value}
+                                        onBlur={field.handleBlur}
+                                        onChange={(event) =>
+                                            field.handleChange(
+                                                event.target.value,
+                                            )
+                                        }
+                                        placeholder="you@example.com"
+                                        autoComplete="email"
+                                    />
+                                    {isInvalid && (
+                                        <FieldError
+                                            errors={field.state.meta.errors}
+                                        />
+                                    )}
+                                    {/* {field.state.meta.errors.length > 0 && (
+                                        <FieldDescription className="text-destructive">
+                                            {
+                                                field.state.meta.errors[0]
+                                                    ?.message
+                                            }
+                                        </FieldDescription>
+                                    )} */}
+                                </Field>
+                            );
+                        }}
                     </form.Field>
 
                     <form.Field name="meterNumber">
@@ -262,9 +300,11 @@ export function RegisterForm() {
                         className="w-full"
                         disabled={isSubmitting}
                     >
-                        {isSubmitting
-                            ? "Creating account..."
-                            : "Create account"}
+                        {isSubmitting ? (
+                            <Spinner>Creating account...</Spinner>
+                        ) : (
+                            "Create account"
+                        )}
                     </Button>
                 )}
             </form.Subscribe>
