@@ -153,7 +153,7 @@ const ZonalOutageReports = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 m-10">
       <PageHeader
         title="Outage Reports"
         description="Review and approve outage reports from customers in your zone."

@@ -72,6 +72,7 @@ const Header = () => {
                         <>
                             <Button
                                 variant="outline"
+                                nativeButton={false}
                                 render={
                                     <Link href={dashboardRoute[role]}>
                                         Dashboard
@@ -94,6 +95,7 @@ const Header = () => {
                             size="icon"
                             className="md:hidden"
                             aria-label="Open navigation menu"
+                            // nativeButton={false}
                             render={<SheetTrigger />}
                         >
                             <Menu className="size-4" />

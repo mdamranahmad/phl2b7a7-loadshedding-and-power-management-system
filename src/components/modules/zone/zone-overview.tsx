@@ -69,13 +69,14 @@ const ZoneOverview = () => {
   const stats = analytics?.data;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 m-10">
       <PageHeader
         title="Zonal Manager Dashboard"
         description="Everything happening across your zone — substations, technicians, issues and revenue."
         actions={
           <Button
             variant="outline"
+            nativeButton={false}
             render={<Link href="/zone/outage-reports" />}
           >
             <FileWarning className="size-4" />
@@ -188,6 +189,7 @@ const ZoneOverview = () => {
             <Button
               variant="ghost"
               size="sm"
+              nativeButton={false}
               render={<Link href="/zone/outage-reports" />}
             >
               View all
