@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const LoginPage = () => {
   return (
-    <div className="grid min-h-svh">
+    <div className="flex flex-1">
       <div className="flex flex-1 items-center justify-center">
         <LoginForm />
       </div>
