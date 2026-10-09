@@ -14,43 +14,50 @@ import { toast } from "@/components/ui/toast";
  * offers a retry plus a way back home.
  */
 export default function RouteError({
-  error,
-  retry,
+    error,
+    retry,
 }: {
-  error: Error & { digest?: string };
-  retry: () => void;
+    error: Error & { digest?: string };
+    retry: () => void;
 }) {
-  useEffect(() => {
-    toast.add({
-      title: "Something went wrong",
-      description:
-        error.message ||
-        "An unexpected error occurred while loading this page.",
-      type: "error",
-    });
-  }, [error]);
+    useEffect(() => {
+        toast.add({
+            title: "Something went wrong",
+            description:
+                error.message ||
+                "An unexpected error occurred while loading this page.",
+            type: "error",
+        });
+    }, [error]);
 
-  return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4 text-center">
-      <div className="rounded-full bg-destructive/10 p-4">
-        <TriangleAlert className="size-8 text-destructive" aria-hidden />
-      </div>
-      <div className="space-y-1">
-        <h1 className="text-xl font-bold tracking-tight">
-          Oops! Something went wrong.
-        </h1>
-        <p className="max-w-md text-sm text-muted-foreground">
-          {error.message ||
-            "We could not load this page. Please try again or head back home."}
-        </p>
-      </div>
-      <div className="flex gap-2">
-        <Button onClick={retry}>
-          <RefreshCw className="size-4" />
-          Try Again
-        </Button>
-        <Button variant="outline" render={<Link href="/">Go Home</Link>} />
-      </div>
-    </div>
-  );
+    return (
+        <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4 text-center">
+            <div className="rounded-full bg-destructive/10 p-4">
+                <TriangleAlert
+                    className="size-8 text-destructive"
+                    aria-hidden
+                />
+            </div>
+            <div className="space-y-1">
+                <h1 className="text-xl font-bold tracking-tight">
+                    Oops! Something went wrong.
+                </h1>
+                <p className="max-w-md text-sm text-muted-foreground">
+                    {error.message ||
+                        "We could not load this page. Please try again or head back home."}
+                </p>
+            </div>
+            <div className="flex gap-2">
+                <Button onClick={retry}>
+                    <RefreshCw className="size-4" />
+                    Try Again
+                </Button>
+                <Button
+                    variant="outline"
+                    nativeButton={false}
+                    render={<Link href="/">Go Home</Link>}
+                />
+            </div>
+        </div>
+    );
 }

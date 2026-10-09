@@ -180,7 +180,7 @@ export function TokenList() {
                       {new Date(token.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">
-                      {token.payment?.status === "UNPAID" ? (
+                      {token.payment?.status === "UNPAID" || token.payment?.status === "FAILED" ? (
                         <PayUnpaidButton tokenId={token.id} />
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
