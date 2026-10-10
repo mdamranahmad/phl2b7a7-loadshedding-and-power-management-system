@@ -14,12 +14,20 @@ export const applyAsTechnicianZSchema = z.object({
     .nonnegative("Experience cannot be negative"),
 });
 
-/** Wizard step 1 — account credentials. */
-export const technicianApplyAccountZSchema = applyAsTechnicianZSchema.pick({
-  name: true,
-  email: true,
-  password: true,
-});
+/** Wizard step 1 — account credentials (incl. password confirmation). */
+export const technicianApplyAccountZSchema = applyAsTechnicianZSchema
+  .pick({
+    name: true,
+    email: true,
+    password: true,
+  })
+  .extend({
+    confirmPassword: z.string().min(1, "Confirm your password"),
+  })
+  .refine((values) => values.password === values.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 /** Wizard step 2 — professional details. */
 export const technicianApplyDetailsZSchema = applyAsTechnicianZSchema.pick({

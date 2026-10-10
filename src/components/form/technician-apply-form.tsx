@@ -49,6 +49,7 @@ export function TechnicianApplyForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   // Step 2 — details
   const [address, setAddress] = useState("");
   const [expertise, setExpertise] = useState("");
@@ -74,6 +75,7 @@ export function TechnicianApplyForm() {
         name,
         email,
         password,
+        confirmPassword,
       });
       if (parsed.success) {
         setErrors({});
@@ -340,6 +342,7 @@ export function TechnicianApplyForm() {
                   onChange={(e) => {
                     setPassword(e.target.value);
                     clearError("password");
+                    clearError("confirmPassword");
                   }}
                   placeholder="••••••••"
                   autoComplete="new-password"
@@ -351,6 +354,27 @@ export function TechnicianApplyForm() {
                 ) : (
                   <FieldDescription>
                     Min 8 characters with an uppercase letter and a number.
+                  </FieldDescription>
+                )}
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="tech-confirm-password">
+                  Confirm password
+                </FieldLabel>
+                <Input
+                  id="tech-confirm-password"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    clearError("confirmPassword");
+                  }}
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                />
+                {errors.confirmPassword && (
+                  <FieldDescription className="text-destructive">
+                    {errors.confirmPassword}
                   </FieldDescription>
                 )}
               </Field>
