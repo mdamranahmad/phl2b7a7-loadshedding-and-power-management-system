@@ -227,6 +227,7 @@ const TechnicianApplications = () => {
                           <Button
                             variant="outline"
                             size="sm"
+                            nativeButton={false}
                             render={
                               // biome-ignore lint/a11y/useAnchorContent: Base UI renders the "Resume" label as the anchor's children via the Button
                               <a

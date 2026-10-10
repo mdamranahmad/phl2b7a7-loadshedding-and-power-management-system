@@ -95,7 +95,6 @@ const Header = () => {
                             size="icon"
                             className="md:hidden"
                             aria-label="Open navigation menu"
-                            // nativeButton={false}
                             render={<SheetTrigger />}
                         >
                             <Menu className="size-4" />

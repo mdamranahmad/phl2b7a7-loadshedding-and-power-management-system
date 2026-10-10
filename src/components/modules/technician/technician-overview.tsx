@@ -57,6 +57,7 @@ const TechnicianOverview = () => {
         actions={
           <Button
             variant="outline"
+            nativeButton={false}
             render={<Link href="/technician/assignments" />}
           >
             <ClipboardList className="size-4" />
@@ -125,6 +126,7 @@ const TechnicianOverview = () => {
               variant="outline"
               size="sm"
               className="w-full"
+              nativeButton={false}
               render={<Link href="/technician/profile" />}
             >
               View profile

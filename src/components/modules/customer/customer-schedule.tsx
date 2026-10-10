@@ -136,6 +136,7 @@ const CustomerSchedule = () => {
               action={
                 <Button
                   variant="outline"
+                  nativeButton={false}
                   render={
                     <Link href="/customer/report-outage">
                       Report an outage instead

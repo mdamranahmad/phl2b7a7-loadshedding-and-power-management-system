@@ -97,9 +97,13 @@ const About = () => {
             ))}
           </ul>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Button render={<Link href="/services">See all features</Link>} />
+            <Button
+              nativeButton={false}
+              render={<Link href="/services">See all features</Link>}
+            />
             <Button
               variant="outline"
+              nativeButton={false}
               render={<Link href="/login">Try the demo</Link>}
             />
           </div>

@@ -95,7 +95,10 @@ const ReportOutageForm = () => {
           <Button variant="outline" onClick={() => setTicketNo(null)}>
             Report another issue
           </Button>
-          <Button render={<Link href="/customer">Back to dashboard</Link>} />
+          <Button
+            nativeButton={false}
+            render={<Link href="/customer">Back to dashboard</Link>}
+          />
         </div>
       </div>
     );
