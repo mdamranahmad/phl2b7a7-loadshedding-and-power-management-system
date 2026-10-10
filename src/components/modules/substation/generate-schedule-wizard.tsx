@@ -144,7 +144,7 @@ const GenerateScheduleWizard = () => {
 
     if (done) {
         return (
-            <Card>
+            <Card className="m-10">
                 <CardHeader className="text-center">
                     <div className="mx-auto mb-2 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                         <Check className="size-6" />
