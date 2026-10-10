@@ -67,18 +67,19 @@ const SubstationOverview = () => {
   const stats = analytics?.data;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 m-10">
       <PageHeader
         title="Substation Manager Dashboard"
         description="Feeders, customers, schedules and open issues for your substation."
         actions={
           <>
-            <Button render={<Link href="/substation/schedules/generate" />}>
+            <Button nativeButton={false} render={<Link href="/substation/schedules/generate" />}>
               <CalendarRange className="size-4" />
               Generate schedule
             </Button>
             <Button
               variant="outline"
+              nativeButton={false}
               render={<Link href="/substation/outage-reports" />}
             >
               <FileWarning className="size-4" />
@@ -162,6 +163,7 @@ const SubstationOverview = () => {
               <Button
                 variant="ghost"
                 size="sm"
+                nativeButton={false}
                 render={<Link href="/substation/schedules" />}
               >
                 View all
