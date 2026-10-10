@@ -38,8 +38,8 @@ const allocationShape = {
 };
 
 const timingShape = {
-  scheduleDuration: z.string().min(1, "Schedule duration is required"),
-  outageSlotDuration: z.string().min(1, "Outage slot duration is required"),
+  scheduleDuration: z.coerce.number().min(1, "Schedule duration is required"),
+  outageSlotDuration: z.coerce.number().min(1, "Outage slot duration is required"),
   batchStartTime: z.string().min(1, "Start date & time is required"),
   batchEndTime: z.string().min(1, "End date & time is required"),
 };
