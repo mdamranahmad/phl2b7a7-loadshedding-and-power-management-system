@@ -53,6 +53,7 @@ const ScheduleBatchDetail = ({
           </Button>
           <Button
             variant="ghost"
+            nativeButton={false}
             render={<Link href="/substation/schedules" />}
           >
             <ArrowLeft className="size-4" />
@@ -85,7 +86,7 @@ const ScheduleBatchDetail = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 m-10">
       <PageHeader
         title={batch.title ?? "Schedule batch"}
         description={`Created ${new Date(batch.createdAt).toLocaleString()} by ${
@@ -95,6 +96,7 @@ const ScheduleBatchDetail = ({
           <>
             <Button
               variant="outline"
+              nativeButton={false}
               render={<Link href="/substation/schedules" />}
             >
               <ArrowLeft className="size-4" />
