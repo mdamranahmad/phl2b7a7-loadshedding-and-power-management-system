@@ -6,6 +6,8 @@ Built with the Next.js App Router, it serves four distinct user roles — **Cust
 
 > This is the frontend. It talks to a separate REST API (see [Backend API](#-backend-api)) and authenticates with HTTP-only JWT cookies.
 
+**Live Demo:** [https://loadshedding-and-power-management-s.vercel.app/](https://loadshedding-and-power-management-s.vercel.app/)
+
 ---
 
 ## 📑 Table of Contents
