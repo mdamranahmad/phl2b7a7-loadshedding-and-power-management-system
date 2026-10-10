@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, FileText, Upload } from "lucide-react";
+import { Check, FileText, MailCheck, Upload } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -20,7 +20,10 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
-import { useApplyAsTechnician } from "@/hooks/technician.hook";
+import {
+  useApplyAsTechnician,
+  useVerifyTechnicianEmail,
+} from "@/hooks/technician.hook";
 import { getApiErrorMessage } from "@/lib/error";
 import {
   technicianApplyAccountZSchema,
@@ -36,6 +39,7 @@ const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 export function TechnicianApplyForm() {
   const router = useRouter();
   const applyMutation = useApplyAsTechnician();
+  const verifyMutation = useVerifyTechnicianEmail();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState(0);
@@ -50,8 +54,11 @@ export function TechnicianApplyForm() {
   const [expertise, setExpertise] = useState("");
   const [experienceYear, setExperienceYear] = useState("");
   const [resume, setResume] = useState<File | null>(null);
-  // Final
-  const [done, setDone] = useState(false);
+  // Post-submit email verification
+  const [submitted, setSubmitted] = useState(false);
+  const [verified, setVerified] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpError, setOtpError] = useState("");
 
   const clearError = (key: string) =>
     setErrors((prev) => {
@@ -129,7 +136,7 @@ export function TechnicianApplyForm() {
         },
         resume,
       });
-      setDone(true);
+      setSubmitted(true);
       toast.add({
         title: "Application submitted",
         description: "An email verification code has been sent to your inbox.",
@@ -144,18 +151,42 @@ export function TechnicianApplyForm() {
     }
   };
 
-  if (done) {
+  const handleVerify = async () => {
+    const code = otp.trim();
+    if (!/^\d{6}$/.test(code)) {
+      setOtpError("Enter the 6-digit code sent to your email");
+      return;
+    }
+    setOtpError("");
+    try {
+      await verifyMutation.mutateAsync({ email: email.trim(), otp: code });
+      setVerified(true);
+      toast.add({
+        title: "Email verified",
+        description:
+          "Your email is verified. A manager will review your application shortly.",
+        type: "success",
+      });
+    } catch (error) {
+      toast.add({
+        title: "Verification failed",
+        description: getApiErrorMessage(error),
+        type: "error",
+      });
+    }
+  };
+
+  if (submitted && verified) {
     return (
       <Card>
         <CardHeader className="text-center">
           <div className="mx-auto mb-2 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
             <Check className="size-6" />
           </div>
-          <CardTitle>Application submitted</CardTitle>
+          <CardTitle>Email verified</CardTitle>
           <CardDescription>
             Your technician application is pending review. You&apos;ll receive
-            an email once a manager verifies your profile. Use the verification
-            code we emailed you to activate the account.
+            an email once a manager verifies your profile, then you can sign in.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
@@ -163,6 +194,59 @@ export function TechnicianApplyForm() {
           <Button variant="outline" onClick={() => router.push("/")}>
             Back to home
           </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (submitted) {
+    return (
+      <Card>
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-2 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <MailCheck className="size-6" />
+          </div>
+          <CardTitle>Verify your email</CardTitle>
+          <CardDescription>
+            Application received. We emailed a 6-digit code to{" "}
+            <span className="font-medium text-foreground">{email}</span>. Enter
+            it below to activate your account.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <Field>
+            <FieldLabel htmlFor="tech-otp">Verification code</FieldLabel>
+            <Input
+              id="tech-otp"
+              inputMode="numeric"
+              maxLength={6}
+              className="text-center text-lg tracking-[0.5em]"
+              value={otp}
+              onChange={(e) => {
+                setOtp(e.target.value.replace(/\D/g, ""));
+                setOtpError("");
+              }}
+              placeholder="000000"
+              autoComplete="one-time-code"
+              autoFocus
+            />
+            {otpError && (
+              <FieldDescription className="text-destructive">
+                {otpError}
+              </FieldDescription>
+            )}
+          </Field>
+          <Button
+            type="button"
+            onClick={() => void handleVerify()}
+            disabled={verifyMutation.isPending || otp.length !== 6}
+          >
+            {verifyMutation.isPending ? "Verifying..." : "Verify email"}
+          </Button>
+          <p className="text-center text-xs text-muted-foreground">
+            The code expires in 5 minutes. Didn&apos;t get it? Apply again with
+            the same email to receive a fresh code.
+          </p>
         </CardContent>
       </Card>
     );
