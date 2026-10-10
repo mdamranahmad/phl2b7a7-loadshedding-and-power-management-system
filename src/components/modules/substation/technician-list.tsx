@@ -65,7 +65,7 @@ const TechnicianList = () => {
   const totalPages = data?.meta?.totalPages ?? 1;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 m-10">
       <PageHeader
         title="All Technicians"
         description="Technicians registered under your substation."

@@ -189,7 +189,7 @@ const SubstationOutageReports = () => {
   const totalPages = data?.meta?.totalPages ?? 1;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 m-10">
       <PageHeader
         title="Outage Reports"
         description="Approved outage tickets for your substation — assign technicians to resolve them."

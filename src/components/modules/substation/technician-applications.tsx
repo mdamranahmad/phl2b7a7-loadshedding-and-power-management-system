@@ -146,7 +146,7 @@ const TechnicianApplications = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 m-10">
       <PageHeader
         title="Technician Applications"
         description="Pending applications from technicians awaiting review."
