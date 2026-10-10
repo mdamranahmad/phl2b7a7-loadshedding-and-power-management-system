@@ -169,7 +169,7 @@ const GenerateScheduleWizard = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 m-10">
       <ol className="flex items-center gap-2">
         {STEPS.map((label, index) => (
           <li key={label} className="flex flex-1 flex-col items-center gap-2">
