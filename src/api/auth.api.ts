@@ -7,3 +7,7 @@ export function userLogin(payload: IUserLoginPayload) {
         body: payload,
     });
 }
+
+export function userGetMe() {
+    return apiClient("/auth/get-me");
+}

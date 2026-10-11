@@ -47,8 +47,8 @@ export default function LoginForm() {
             login(loginData, {
                 onSuccess: (res) => {
                     toast.add({
-                        title: "Login Success",
-                        description: "Welcome Back",
+                        title: "Welcome Back",
+                        description: res.message || "Login Success",
                         type: "Success",
                     });
 

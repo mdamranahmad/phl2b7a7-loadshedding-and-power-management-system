@@ -1,5 +1,8 @@
+"use client";
+
 import Logo from "@/assets/svg/Logo";
 import { Button } from "@/components/ui/button";
+import { useUserGetMe } from "@/hooks";
 import { IUserRole } from "@/types";
 import Link from "next/link";
 
@@ -16,6 +19,8 @@ const Header = () => {
         TECHNICIAN: "/technician",
         CUSTOMER: "/customer",
     };
+
+    const { data, isLoading } = useUserGetMe();
 
     // While mutation, we were mutating data, and destructured mutation from useMutation, in case of Query, data and isLoading will be enough to use
     // Header will be a client component as fetching data is a dynamic process (static shell, dynamic item/island)
@@ -64,24 +69,23 @@ const Header = () => {
                     {/* {role && <Link href={dashboardRoute[role]}>Dashboard</Link>} */}
                 </nav>
                 <div>
-                    {/**Login Button will render only for logged out user */}
-                    {/* {!isLoading && !data && ( */}
-                    <Button
-                        variant="outline"
-                        render={<Link href="/login">Login</Link>}
-                        nativeButton={false}
-                    >
-                        Login
-                    </Button>
-                    {/* )}
-                    {!isLoading && data && ( */}
-                    {/* <Button
-                        // onClick={handleLogout}
-                        variant="destructive"
-                    >
-                        Logout
-                    </Button> */}
-                    {/* )} */}
+                    {!isLoading && !data && (
+                        <Button
+                            variant="outline"
+                            render={<Link href="/login">Login</Link>}
+                            nativeButton={false}
+                        >
+                            Login
+                        </Button>
+                    )}
+                    {!isLoading && data && (
+                        <Button
+                            // onClick={handleLogout}
+                            variant="destructive"
+                        >
+                            Logout
+                        </Button>
+                    )}
                 </div>
             </div>
         </header>
