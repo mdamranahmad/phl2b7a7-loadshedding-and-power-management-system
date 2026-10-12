@@ -12,13 +12,14 @@ import {
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
-import { loginZschema } from "@/validation";
 import { useRouter } from "next/navigation";
 import { useUserLogin } from "@/hooks";
 import { toast } from "../ui/toast";
 import { IApiError } from "@/types";
 import { Spinner } from "../ui/spinner";
 import { useQueryClient } from "@tanstack/react-query";
+import { loginZSchema } from "@/validation";
+import Link from "next/link";
 
 export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
@@ -39,7 +40,7 @@ export default function LoginForm() {
             email: "testtechnician01@email.com",
             password: "Test@technician12345",
         },
-        validators: { onSubmit: loginZschema },
+        validators: { onSubmit: loginZSchema },
         onSubmit: ({ value }) => {
             const loginData = {
                 email: value.email,
@@ -194,6 +195,12 @@ export default function LoginForm() {
             {/* Google Login Component Will Go Here */}
             {/* Demo Login Component Will Go Here */}
             {/* Prompt To Register Will Go Here */}
+            <div>
+                <span className="text-center text-sm text-muted-foreground">
+                    Don&apos;t have an account?{" "}
+                    <Link href="registration" className="font-medium underline underline-offset-4 hover:text-primary">Sign Up</Link>
+                </span>
+            </div>
         </div>
     );
 }
