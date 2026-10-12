@@ -18,10 +18,12 @@ import { useUserLogin } from "@/hooks";
 import { toast } from "../ui/toast";
 import { IApiError } from "@/types";
 import { Spinner } from "../ui/spinner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const { mutate: login, isPending: isLoginPending } = useUserLogin();
     const form = useForm({
@@ -51,6 +53,9 @@ export default function LoginForm() {
                         description: res.message || "Login Success",
                         type: "Success",
                     });
+
+                    queryClient.invalidateQueries({ queryKey: ["user"] });
+                    // Immediately invalidates the cache data, causing a reload/ refetch, updates the ui
 
                     router.push("/");
                 },
@@ -101,7 +106,7 @@ export default function LoginForm() {
                                 !field.state.meta.isValid;
                             return (
                                 <Field data-invalid={isInvalid}>
-                                    <FieldLabel htmlFor="field.name">
+                                    <FieldLabel htmlFor={field.name}>
                                         Email
                                     </FieldLabel>
                                     <Input
@@ -131,7 +136,7 @@ export default function LoginForm() {
                                 !field.state.meta.isValid;
                             return (
                                 <Field data-invalid={isInvalid}>
-                                    <FieldLabel htmlFor="field.name">
+                                    <FieldLabel htmlFor={field.name}>
                                         Password
                                     </FieldLabel>
                                     <div className="relative">

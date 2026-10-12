@@ -8,6 +8,12 @@ export function userLogin(payload: IUserLoginPayload) {
     });
 }
 
+export function userLogout() {
+    return apiClient<IApiResponse<null>>("/auth/logout", {
+        method: "POST",
+    });
+}
+
 export function userGetMe() {
     return apiClient("/auth/get-me");
 }

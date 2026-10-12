@@ -2,8 +2,10 @@
 
 import Logo from "@/assets/svg/Logo";
 import { Button } from "@/components/ui/button";
-import { useUserGetMe } from "@/hooks";
-import { IUserRole } from "@/types";
+import { toast } from "@/components/ui/toast";
+import { useUserGetMe, useUserLogout } from "@/hooks";
+import { IApiError, IUserRole } from "@/types";
+import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 
 const Header = () => {
@@ -21,40 +23,46 @@ const Header = () => {
     };
 
     const { data, isLoading } = useUserGetMe();
+    const { mutate: logout } = useUserLogout();
+    // useQueryClient() from M45V05 is not used for now, will be used later
+    const queryClient = useQueryClient();
 
-    // While mutation, we were mutating data, and destructured mutation from useMutation, in case of Query, data and isLoading will be enough to use
-    // Header will be a client component as fetching data is a dynamic process (static shell, dynamic item/island)
-    // const { data, isLoading } = useGetMe(); // Hook call to check if user exists
-    // const { mutate: logout } = useLogout(); // Mutate for post method to mutate the data
+    // console.log("data: ", data);
+
+    const role: IUserRole = data?.data.role;
+
     // const queryClient = useQueryClient(); // To invalidate tags to refresh cache
     // console.log("data: ", data);
 
     // const role: UserRole = !!data?.data && data?.data.role;
 
-    // const handleLogout = () => {
-    //     logout(undefined, {
-    //         onSuccess: () => {
-    //             toast.add({
-    //                 title: "GoodBye",
-    //                 description: "Logged Out Successfuly",
-    //                 type: "success",
-    //             });
-    //             // queryClient.invalidateQueries({ queryKey: ["user"] }); // Stales the user cache, a fresh data will be fetch for next refresh
-    //             queryClient.removeQueries({ queryKey: ["user"] }); // remove stale cache
-    //         },
-    //         onError: () => {
-    //             toast.add({
-    //                 title: "Logout Failed!",
-    //                 description: "Something Went Wrong",
-    //                 type: "error",
-    //             });
-    //         },
-    //     });
-    // };
+    const handleLogout = () => {
+        logout(undefined, {
+            onSuccess: (res) => {
+                toast.add({
+                    title: "Logout Successful.",
+                    description: res.message || "See you next time",
+                    type: "success",
+                });
+                // useQueryClient() is not used to remove cach data, cach token is removed on logout but working logic unknown, will implement later
+                // queryClient.invalidateQueries({ queryKey: ["user"] });
+                queryClient.removeQueries({ queryKey: ["user"] });
+                // Calling queryClient.removeQueries({ queryKey: ["user"] }) forces React Query to immediately drop the cached user data. This instantly updates the UI state
+            },
+
+            onError: (err: IApiError) => {
+                toast.add({
+                    title: "Logout Failed!",
+                    description: err.data?.message || "Something Went Wrong!",
+                    type: "error",
+                });
+            },
+        });
+    };
+
     return (
         <header className="w-full h-16 border border-t">
             <div className="flex justify-between items-center h-full max-w-7xl mx-auto">
-                {/* <div>PH HealthCare</div> */}
                 <div className="flex items-center gap-2">
                     <Link href="./">
                         <Logo />
@@ -66,6 +74,7 @@ const Header = () => {
                             {route.name}
                         </Link>
                     ))}
+                    {role && <Link href={dashboardRoute[role]}>Dashboard</Link>}
                     {/* {role && <Link href={dashboardRoute[role]}>Dashboard</Link>} */}
                 </nav>
                 <div>
@@ -79,10 +88,7 @@ const Header = () => {
                         </Button>
                     )}
                     {!isLoading && data && (
-                        <Button
-                            // onClick={handleLogout}
-                            variant="destructive"
-                        >
+                        <Button onClick={handleLogout} variant="destructive">
                             Logout
                         </Button>
                     )}
