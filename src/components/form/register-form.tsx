@@ -61,8 +61,15 @@ const RegistrationForm = () => {
                     });
                     const params = new URLSearchParams({
                         email: registerData.email,
+                        source: "register",
+                        step: "verify",
                     });
-                    router.push(`/register/verify-email?${params.toString()}`);
+                    router.push(
+                        `/registration/verify-email?${params.toString()}`,
+                    );
+                    // router.push(
+                    //     `/register/verify-email?${value.email.toString()}`,
+                    // );
                 },
                 onError: (err: IApiError) => {
                     toast.add({
@@ -306,8 +313,9 @@ const RegistrationForm = () => {
                     </Button>
                 </FieldGroup>
             </form>
-            <FieldSeparator>OR</FieldSeparator>
-            <div className="text-center text-sm to-muted-foreground">
+            <FieldSeparator>Or Continue With</FieldSeparator>
+            {/*Google login component will go here */}
+            <div className="text-center text-sm text-muted-foreground">
                 Already have and account?{" "}
                 <Link
                     href="/login"
