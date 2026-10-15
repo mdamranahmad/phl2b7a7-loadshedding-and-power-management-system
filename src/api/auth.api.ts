@@ -1,5 +1,10 @@
 import apiClient from "@/lib/apiClient";
-import { IApiResponse, IUserLoginPayload, IUserLoginResponse } from "@/types";
+import {
+    IApiResponse,
+    IUserLoginPayload,
+    IUserLoginResponse,
+    IUserRegisterPayload,
+} from "@/types";
 
 export function userLogin(payload: IUserLoginPayload) {
     return apiClient<IApiResponse<IUserLoginResponse>>("/auth/login", {
@@ -16,4 +21,11 @@ export function userLogout() {
 
 export function userGetMe() {
     return apiClient("/auth/get-me");
+}
+
+export function userRegister(payload: IUserRegisterPayload) {
+    return apiClient<IApiResponse<null>>("/auth/register", {
+        method: "POST",
+        body: payload,
+    });
 }

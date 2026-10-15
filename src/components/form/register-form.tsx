@@ -1,30 +1,84 @@
 "use client";
 import { useForm } from "@tanstack/react-form";
-import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
+import {
+    Field,
+    FieldError,
+    FieldGroup,
+    FieldLabel,
+    FieldSeparator,
+} from "../ui/field";
 import { Input } from "../ui/input";
 import { CustomerRegistrationZSchema } from "@/validation";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
+import { useUserRegister } from "@/hooks";
+import { IApiError, IUserRegisterPayload } from "@/types";
+import { toast } from "../ui/toast";
+import { useRouter } from "next/navigation";
+import { Spinner } from "../ui/spinner";
+import Link from "next/link";
 
 const RegistrationForm = () => {
+    const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const { mutate: register, isPending: isRegisterPending } =
+        useUserRegister();
     const form = useForm({
         defaultValues: {
-            name: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-            meterNumber: "",
+            name: "Ordinary Man",
+            email: "ordinaryman@email.com",
+            password: "123456Aa",
+            confirmPassword: "123456Aa",
+            meterNumber: "234567891234",
         },
         validators: { onSubmit: CustomerRegistrationZSchema },
+        onSubmit: async ({ value }) => {
+            const registerData: IUserRegisterPayload = {
+                name: value.name,
+                email: value.email,
+                password: value.password,
+                customerProfile: { meterNumber: value.meterNumber },
+            };
+
+            register(registerData, {
+                onSuccess: (res) => {
+                    if (!res.success) {
+                        toast.add({
+                            title: "Server Failure",
+                            description:
+                                res.message ||
+                                "Something went wrong! Please try again.",
+                            type: "error",
+                        });
+                    }
+
+                    toast.add({
+                        title: "Registration Initiated",
+                        description: res.message || "Please Verify Email",
+                        type: "success",
+                    });
+                    const params = new URLSearchParams({
+                        email: registerData.email,
+                    });
+                    router.push(`/register/verify-email?${params.toString()}`);
+                },
+                onError: (err: IApiError) => {
+                    toast.add({
+                        title: "Registration Failure",
+                        description:
+                            err.data?.message ||
+                            "Something went wrong! Please try again.",
+                        type: "error",
+                    });
+                },
+            });
+        },
     });
+
     return (
-        <div
-            className="w-full max-w-xs
-        "
-        >
+        <div className="w-full max-w-xs flex flex-col gap-5">
             <div className="text-center flex flex-col items-center gap-2">
                 <h1 className="text-2xl font-bold tracking-tight">
                     Create An Account
@@ -239,11 +293,29 @@ const RegistrationForm = () => {
                             );
                         }}
                     </form.Field>
-                    <Button type="submit" size="lg">
-                        Submit
+                    <Button
+                        type="submit"
+                        size="lg"
+                        disabled={isRegisterPending}
+                    >
+                        {isRegisterPending ? (
+                            <Spinner>Submitting...</Spinner>
+                        ) : (
+                            "Submit"
+                        )}
                     </Button>
                 </FieldGroup>
             </form>
+            <FieldSeparator>OR</FieldSeparator>
+            <div className="text-center text-sm to-muted-foreground">
+                Already have and account?{" "}
+                <Link
+                    href="/login"
+                    className="font-medium underline underline-offset-4 hover:text-primary"
+                >
+                    Login
+                </Link>
+            </div>
         </div>
     );
 };
