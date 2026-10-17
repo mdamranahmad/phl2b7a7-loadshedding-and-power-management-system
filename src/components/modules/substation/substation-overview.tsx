@@ -73,7 +73,10 @@ const SubstationOverview = () => {
         description="Feeders, customers, schedules and open issues for your substation."
         actions={
           <>
-            <Button nativeButton={false} render={<Link href="/substation/schedules/generate" />}>
+            <Button
+              nativeButton={false}
+              render={<Link href="/substation/schedules/generate" />}
+            >
               <CalendarRange className="size-4" />
               Generate schedule
             </Button>

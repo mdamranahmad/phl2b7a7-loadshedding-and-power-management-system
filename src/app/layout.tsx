@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import AssistantWidget from "@/components/modules/chat/assistant-widget";
 import { Toaster } from "@/components/ui/toast";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import Providers from "@/providers";
 
@@ -39,7 +40,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "font-sans",
         inter.variable,
       )}
+      // The theme script below mutates <html>'s class/style before React
+      // hydrates, so the server markup intentionally differs.
+      suppressHydrationWarning
     >
+      <head>
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: static, no user input
+          dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
+        />
+      </head>
       <Providers>
         <body className="min-h-full flex flex-col">
           {children}

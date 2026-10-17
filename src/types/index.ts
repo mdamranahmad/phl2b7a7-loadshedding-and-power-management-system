@@ -8,5 +8,6 @@ export * from "./outage.type";
 export * from "./schedule.type";
 export * from "./sidebar.types";
 export * from "./technician.type";
+export * from "./theme.type";
 export * from "./token.type";
 export * from "./user.type";

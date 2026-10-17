@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import ThemeToggle from "@/components/modules/common/theme-toggle";
 import {
   SidebarInset,
   SidebarProvider,
@@ -23,6 +24,7 @@ export default function DashboardShell({
           <span className="text-sm text-muted-foreground">
             Load Shedding & Power Management System
           </span>
+          <ThemeToggle className="ml-auto" />
         </header>
         <div className="flex-1">{children}</div>
       </SidebarInset>
