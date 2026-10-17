@@ -35,6 +35,7 @@ Built with the Next.js App Router, it serves four distinct user roles — **Cust
 - **Technician applications** — public multi-step application (with resume upload + email OTP verification) and a manager review/approval workflow.
 - **Power allocation** — substation managers allocate kW across areas.
 - **Analytics dashboards** — role-specific stats and Recharts visualizations (bar & donut charts).
+- **Built-in help assistant** — a floating *Power Assistant* on every page that answers questions about schedules, tokens, outages, roles and applications from an offline knowledge base, with suggestion chips and deep links into the right screen.
 - **Polished UX** — responsive layout, skeleton loaders, empty states, error boundaries, toast notifications, and URL-synced filters/pagination.
 
 ---

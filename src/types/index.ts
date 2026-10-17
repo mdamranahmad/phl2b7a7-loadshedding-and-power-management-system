@@ -1,6 +1,7 @@
 export * from "./analytics.type";
 export * from "./api.type";
 export * from "./auth.type";
+export * from "./chat.type";
 export * from "./common.type";
 export * from "./error.type";
 export * from "./outage.type";
